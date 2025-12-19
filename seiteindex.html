@@ -1,0 +1,967 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>Desenhe a Letra • Infantil</title>
+  <style>
+    :root{
+      --bg1:#f5fbff;
+      --bg2:#eaf6ff;
+      --card:#ffffff;
+      --ink:#0a3d62;
+      --muted:#4a6b82;
+      --blue:#2e86ff;
+      --green:#23c26b;
+      --pink:#ff5ca8;
+      --yellow:#ffcc33;
+      --shadow: 0 10px 28px rgba(0,0,0,.08);
+      --radius: 22px;
+    }
+
+    *{ box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--ink);
+      background: radial-gradient(1200px 500px at 50% -50%, #ffffff 0%, var(--bg1) 35%, var(--bg2) 100%);
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+
+    .wrap{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 14px;
+    }
+
+    /* Top bar */
+    .top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding: 8px 6px 14px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+    }
+    .logo{
+      width:46px; height:46px; border-radius:16px;
+      background: linear-gradient(135deg, var(--blue), #7aaeff);
+      box-shadow: var(--shadow);
+      display:grid; place-items:center;
+      color:white; font-size:22px;
+    }
+    .title h1{
+      margin:0; font-size:18px; line-height:1.1;
+    }
+    .title p{
+      margin:2px 0 0; color:var(--muted); font-size:12px;
+    }
+
+    .pill{
+      display:flex; align-items:center; gap:8px;
+      background:rgba(255,255,255,.85);
+      border: 1px solid rgba(46,134,255,.18);
+      padding:10px 12px;
+      border-radius: 999px;
+      box-shadow: 0 6px 18px rgba(0,0,0,.06);
+      font-size:13px;
+      color: var(--muted);
+      white-space:nowrap;
+    }
+
+    /* Layout */
+    .grid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:12px;
+    }
+    @media (max-width: 860px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+
+    .card{
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 14px;
+      border: 1px solid rgba(0,0,0,.06);
+    }
+
+    /* Kid header card */
+    .hero{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      padding: 14px;
+      background: linear-gradient(180deg, rgba(46,134,255,.12), rgba(255,255,255,1));
+      border-radius: var(--radius);
+      border: 1px solid rgba(46,134,255,.18);
+    }
+    .hero .kid{
+      display:flex; align-items:center; gap:10px;
+    }
+    .avatar{
+      width:54px; height:54px; border-radius:18px;
+      background: linear-gradient(135deg, var(--pink), #ff92c7);
+      display:grid; place-items:center;
+      color:white; font-size:26px;
+      box-shadow: var(--shadow);
+      flex: 0 0 auto;
+    }
+    .hero .kid .meta{
+      display:flex; flex-direction:column; gap:2px;
+    }
+    .hero .kid .meta .name{
+      font-weight:800; font-size:14px;
+    }
+    .hero .kid .meta .sub{
+      color: var(--muted);
+      font-size:12px;
+    }
+
+    /* Buttons */
+    .btnrow{ display:flex; flex-wrap:wrap; gap:10px; margin-top:12px; }
+    .btn{
+      appearance:none;
+      border:0;
+      padding: 12px 14px;
+      border-radius: 16px;
+      font-weight:800;
+      cursor:pointer;
+      box-shadow: 0 10px 18px rgba(0,0,0,.08);
+      display:flex; align-items:center; gap:10px;
+      user-select:none;
+    }
+    .btn:active{ transform: translateY(1px); }
+    .btn.small{ padding:10px 12px; border-radius:14px; font-weight:800; box-shadow: 0 8px 16px rgba(0,0,0,.06); }
+    .btn.blue{ background: var(--blue); color:white; }
+    .btn.green{ background: var(--green); color:white; }
+    .btn.yellow{ background: var(--yellow); color:#2b2b2b; }
+    .btn.pink{ background: var(--pink); color:white; }
+    .btn.ghost{
+      background: #f3f7ff;
+      color: var(--ink);
+      border: 1px solid rgba(46,134,255,.22);
+      box-shadow: none;
+    }
+
+    .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #f7fbff;
+      border: 1px solid rgba(0,0,0,.06);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      white-space:nowrap;
+    }
+
+    /* Canvas area */
+    .canvasWrap{
+      position:relative;
+      border-radius: 22px;
+      overflow:hidden;
+      border: 1px solid rgba(0,0,0,.08);
+      background: linear-gradient(180deg, #fbfdff, #f1f8ff);
+      box-shadow: inset 0 0 0 2px rgba(46,134,255,.10);
+      height: 420px;
+    }
+    @media (max-width: 520px){
+      .canvasWrap{ height: 380px; }
+    }
+
+    canvas{
+      width:100%;
+      height:100%;
+      display:block;
+      touch-action: none; /* essencial para desenhar sem scroll */
+    }
+
+    .guide{
+      position:absolute;
+      inset:0;
+      display:grid;
+      place-items:center;
+      pointer-events:none;
+      opacity: .14;
+      font-weight: 900;
+      color: #1f5cff;
+      text-align:center;
+      line-height:1;
+      user-select:none;
+      padding: 10px;
+    }
+    .guide span{
+      display:block;
+      transform: translateY(6px);
+      letter-spacing: .02em;
+    }
+
+    .feedback{
+      margin-top:10px;
+      padding: 12px 12px;
+      border-radius: 18px;
+      background: #f7fbff;
+      border: 1px solid rgba(0,0,0,.06);
+      color: var(--muted);
+      font-weight:700;
+      font-size: 13px;
+      min-height: 48px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .feedback strong{ color: var(--ink); }
+
+    /* Sidebar */
+    .sideTitle{
+      display:flex; justify-content:space-between; align-items:center;
+      margin-bottom: 10px;
+      gap:10px;
+    }
+    .sideTitle h2{
+      font-size: 15px;
+      margin:0;
+    }
+    .stats{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin-top: 10px;
+    }
+    .stat{
+      background: linear-gradient(180deg, rgba(46,134,255,.08), rgba(255,255,255,1));
+      border: 1px solid rgba(46,134,255,.16);
+      border-radius: 18px;
+      padding: 12px;
+    }
+    .stat .k{ color: var(--muted); font-size: 12px; font-weight:800; }
+    .stat .v{ font-size: 18px; font-weight: 900; margin-top: 4px; }
+
+    .list{
+      margin-top: 12px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .item{
+      padding:10px 12px;
+      border-radius: 18px;
+      border: 1px solid rgba(0,0,0,.06);
+      background: #fff;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      font-weight:800;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .item b{ color: var(--ink); font-size: 12px; }
+    .stars{ font-size: 14px; }
+    .foot{
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    /* Modal */
+    dialog{
+      width:min(520px, 92vw);
+      border: 0;
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      padding: 0;
+      overflow:hidden;
+    }
+    dialog::backdrop{ background: rgba(12, 30, 60, .35); }
+    .modal{
+      padding: 14px;
+      background: white;
+    }
+    .modal h3{ margin: 0 0 8px; }
+    .modal p{ margin: 0 0 12px; color: var(--muted); font-weight:700; }
+    .row{
+      display:flex; gap:10px; align-items:center;
+    }
+    .input{
+      width:100%;
+      padding: 12px 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(0,0,0,.10);
+      font-size: 16px;
+      font-weight: 800;
+      outline:none;
+    }
+    .input:focus{ border-color: rgba(46,134,255,.45); }
+
+    /* Fun confetti */
+    .confetti{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      overflow:hidden;
+    }
+    .confetti i{
+      position:absolute;
+      width:10px;height:14px;
+      border-radius: 4px;
+      opacity:.95;
+      animation: fall 900ms ease-out forwards;
+      transform: translateY(-40px) rotate(0deg);
+    }
+    @keyframes fall{
+      to{ transform: translateY(460px) rotate(260deg); opacity:0; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <div class="logo">✍️</div>
+        <div class="title">
+          <h1>Desenhe a Letra</h1>
+          <p>Web • Offline • 6–8 anos • toque para desenhar</p>
+        </div>
+      </div>
+      <div class="pill" id="topPill">👧 Sem perfil • toque em “Entrar”</div>
+    </div>
+
+    <div class="grid">
+      <!-- MAIN -->
+      <div class="card">
+        <div class="hero">
+          <div class="kid">
+            <div class="avatar" id="avatar">🧒</div>
+            <div class="meta">
+              <div class="name" id="kidName">Nenhuma criança</div>
+              <div class="sub" id="kidSub">Entre para salvar progresso ⭐</div>
+            </div>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
+            <span class="chip" id="phaseChip">🌈 Fase: Letras</span>
+            <span class="chip" id="missionChip">🎯 Missão: 1/4</span>
+            <span class="chip" id="starsChip">⭐ 0</span>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:10px; align-items:center; justify-content:space-between; margin-top:12px;">
+          <div>
+            <div style="font-size:12px;color:var(--muted);font-weight:900;">ALVO</div>
+            <div style="font-size:34px;font-weight:1000; letter-spacing:.02em;" id="targetText">A</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:12px;color:var(--muted);font-weight:900;">DICA</div>
+            <div style="font-size:13px;font-weight:900;color:var(--ink);" id="hintText">Desenhe por cima com o dedo 🙂</div>
+          </div>
+        </div>
+
+        <div class="canvasWrap" style="margin-top:12px;">
+          <div class="guide"><span id="guideText">A</span></div>
+          <canvas id="pad"></canvas>
+          <div class="confetti" id="confetti"></div>
+        </div>
+
+        <div class="btnrow">
+          <button class="btn blue" id="btnEnter">👧 Entrar</button>
+          <button class="btn green" id="btnCheck">✅ Verificar</button>
+          <button class="btn yellow" id="btnClear">🧽 Limpar</button>
+          <button class="btn pink" id="btnNext">➡️ Próximo</button>
+          <button class="btn ghost small" id="btnScore">🏆 Placar</button>
+          <button class="btn ghost small" id="btnReset">🧠 Refazer nível</button>
+        </div>
+
+        <div class="feedback" id="feedback">
+          <span>💡</span>
+          <div><strong>Dica:</strong> desenhe por cima com calma, cobrindo o desenho.</div>
+        </div>
+      </div>
+
+      <!-- SIDE -->
+      <div class="card">
+        <div class="sideTitle">
+          <h2>📊 Progresso</h2>
+          <span class="chip" id="levelChip">Nível: 1</span>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <div class="k">Estrelas</div>
+            <div class="v" id="stStars">0 ⭐</div>
+          </div>
+          <div class="stat">
+            <div class="k">Vitórias seguidas (3⭐)</div>
+            <div class="v" id="stStreak">0</div>
+          </div>
+          <div class="stat">
+            <div class="k">Medalhas</div>
+            <div class="v" id="stMedals">🥇0 🥈0 🥉0</div>
+          </div>
+          <div class="stat">
+            <div class="k">Último resultado</div>
+            <div class="v" style="font-size:14px" id="stLast">—</div>
+          </div>
+        </div>
+
+        <div class="list" id="historyList"></div>
+
+        <div class="foot">
+          ✅ Offline: tudo é salvo no aparelho (localStorage).<br>
+          📱 Dica: use em tela cheia no tablet/celular.<br>
+          👨‍👩‍👧 “Refazer nível” faz uma avaliação rápida (simples).
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Login -->
+  <dialog id="dlgLogin">
+    <div class="modal">
+      <h3>👧 Entrar</h3>
+      <p>Digite o nome da criança para salvar estrelas e histórico neste aparelho.</p>
+      <div class="row">
+        <input class="input" id="inpName" placeholder="Ex.: Ana" maxlength="18" />
+      </div>
+      <div class="btnrow" style="margin-top:12px;">
+        <button class="btn blue" id="btnLoginOk">✅ Salvar</button>
+        <button class="btn ghost" id="btnLoginCancel">Cancelar</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Modal: Placar -->
+  <dialog id="dlgScore">
+    <div class="modal">
+      <h3>🏆 Placar (Top 10)</h3>
+      <p>Melhores resultados no aparelho (por estrelas e tempo).</p>
+      <div id="scoreBox" style="display:flex;flex-direction:column;gap:8px;"></div>
+      <div class="btnrow" style="margin-top:12px;">
+        <button class="btn blue" id="btnScoreClose">OK</button>
+      </div>
+    </div>
+  </dialog>
+
+<script>
+/* ============================
+   Dados e lógica pedagógica
+   ============================ */
+
+const CONTENT = {
+  letters: "AEIOUBCDFGHJKLMNPQRSTVWXYZ".split(""),
+  syllables: ["BA","BE","BI","BO","BU","CA","CE","CI","CO","CU","DA","DE","DI","DO","DU","FA","FE","FI","FO","FU","LA","LE","LI","LO","LU","MA","ME","MI","MO","MU","PA","PE","PI","PO","PU","SA","SE","SI","SO","SU"],
+  words: ["BOLA","CASA","GATO","PATO","MESA","SAPO","PIPA","MALA","FOCA","LOBO","MOTO","DADO","BANCO","CARTA","BONECA","MACACO","FOLHA","CABELO","CADERNO","BICICLETA"]
+};
+
+// Trilhas por “nível” (simples e didática)
+const TRACKS = {
+  1: { name:"Nível 1 (Letras)", phase:"Letras", steps:["TRACE","TRACE","TRACE","TRACE"] },
+  2: { name:"Nível 2 (Sílabas)", phase:"Sílabas", steps:["TRACE","TRACE","TRACE","TRACE"] },
+  3: { name:"Nível 3 (Palavras)", phase:"Palavras", steps:["TRACE","TRACE","TRACE","TRACE"] }
+};
+
+const STORAGE_KEY = "kids_trace_web_v1";
+
+// Avaliação de desenho: cobertura em grade + pontos mínimos
+const GRID_COLS = 12, GRID_ROWS = 8;
+const MIN_POINTS = 80;
+const COV_3 = 0.35, COV_2 = 0.25, COV_1 = 0.15;
+
+function nowISO(){
+  const d = new Date();
+  const pad = (n)=> String(n).padStart(2,"0");
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function loadDB(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return { kids:{}, scoreboard:[] };
+    return JSON.parse(raw);
+  }catch(e){
+    return { kids:{}, scoreboard:[] };
+  }
+}
+function saveDB(db){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
+}
+
+function getOrCreateKid(db, name){
+  if(!db.kids[name]){
+    db.kids[name] = {
+      name,
+      level: 1,
+      mission: 0,
+      stars: 0,
+      streak3: 0,
+      medals: { gold:0, silver:0, bronze:0 },
+      history: [],
+      assessmentDone: false
+    };
+  }
+  return db.kids[name];
+}
+
+function medalFromStars(stars){
+  if(stars >= 3) return "gold";
+  if(stars === 2) return "silver";
+  if(stars === 1) return "bronze";
+  return null;
+}
+
+function friendlyMedal(m){
+  if(m==="gold") return "🥇 Ouro";
+  if(m==="silver") return "🥈 Prata";
+  if(m==="bronze") return "🥉 Bronze";
+  return "—";
+}
+
+/* ============================
+   Canvas de desenho (touch)
+   ============================ */
+
+const canvas = document.getElementById("pad");
+const ctx = canvas.getContext("2d");
+
+let points = [];
+let drawing = false;
+let t0 = null;
+
+function resizeCanvas(){
+  const rect = canvas.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = Math.floor(rect.width * dpr);
+  canvas.height = Math.floor(rect.height * dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+
+  // background “caderno”
+  ctx.clearRect(0,0,rect.width,rect.height);
+  // linhas suaves
+  ctx.globalAlpha = 0.25;
+  ctx.strokeStyle = "#b9d6ff";
+  ctx.lineWidth = 1;
+  for(let y=40; y<rect.height; y+=44){
+    ctx.beginPath();
+    ctx.moveTo(16, y);
+    ctx.lineTo(rect.width-16, y);
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+}
+
+function clearPad(){
+  points = [];
+  drawing = false;
+  t0 = null;
+  resizeCanvas();
+}
+
+function getPos(e){
+  const rect = canvas.getBoundingClientRect();
+  const p = (e.touches && e.touches[0]) ? e.touches[0] : e;
+  return { x: p.clientX - rect.left, y: p.clientY - rect.top };
+}
+
+function startDraw(e){
+  e.preventDefault();
+  drawing = true;
+  if(!t0) t0 = performance.now();
+  const pos = getPos(e);
+  points.push(pos);
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+  ctx.strokeStyle = "#0a84ff";
+  ctx.lineWidth = 10;
+  ctx.beginPath();
+  ctx.moveTo(pos.x, pos.y);
+}
+
+function moveDraw(e){
+  if(!drawing) return;
+  e.preventDefault();
+  const pos = getPos(e);
+  points.push(pos);
+  ctx.lineTo(pos.x, pos.y);
+  ctx.stroke();
+}
+
+function endDraw(e){
+  if(!drawing) return;
+  e.preventDefault();
+  drawing = false;
+}
+
+canvas.addEventListener("pointerdown", startDraw);
+canvas.addEventListener("pointermove", moveDraw);
+canvas.addEventListener("pointerup", endDraw);
+canvas.addEventListener("pointercancel", endDraw);
+
+canvas.addEventListener("touchstart", startDraw, {passive:false});
+canvas.addEventListener("touchmove", moveDraw, {passive:false});
+canvas.addEventListener("touchend", endDraw, {passive:false});
+
+window.addEventListener("resize", resizeCanvas);
+
+/* ============================
+   Avaliação do desenho
+   ============================ */
+function evaluateDrawing(){
+  if(points.length < MIN_POINTS){
+    return { stars:0, cov:0, time:0 };
+  }
+  const rect = canvas.getBoundingClientRect();
+  const cells = new Set();
+  for(const p of points){
+    const gx = Math.max(0, Math.min(GRID_COLS-1, Math.floor(p.x/rect.width*GRID_COLS)));
+    const gy = Math.max(0, Math.min(GRID_ROWS-1, Math.floor(p.y/rect.height*GRID_ROWS)));
+    cells.add(`${gx},${gy}`);
+  }
+  const cov = cells.size / (GRID_COLS*GRID_ROWS);
+  const time = Math.max(0.1, ((performance.now() - (t0||performance.now()))/1000));
+  let stars = 0;
+  if(cov >= COV_3) stars = 3;
+  else if(cov >= COV_2) stars = 2;
+  else if(cov >= COV_1) stars = 1;
+  return { stars, cov, time };
+}
+
+/* ============================
+   UI / Estado do App
+   ============================ */
+const el = (id)=> document.getElementById(id);
+
+const topPill = el("topPill");
+const kidName = el("kidName");
+const kidSub = el("kidSub");
+const avatar = el("avatar");
+
+const phaseChip = el("phaseChip");
+const missionChip = el("missionChip");
+const starsChip = el("starsChip");
+const levelChip = el("levelChip");
+
+const targetText = el("targetText");
+const guideText = el("guideText");
+const hintText = el("hintText");
+const feedback = el("feedback");
+const confetti = el("confetti");
+
+const stStars = el("stStars");
+const stStreak = el("stStreak");
+const stMedals = el("stMedals");
+const stLast = el("stLast");
+const historyList = el("historyList");
+
+const dlgLogin = el("dlgLogin");
+const inpName = el("inpName");
+const dlgScore = el("dlgScore");
+const scoreBox = el("scoreBox");
+
+const btnEnter = el("btnEnter");
+const btnCheck = el("btnCheck");
+const btnClear = el("btnClear");
+const btnNext  = el("btnNext");
+const btnScore = el("btnScore");
+const btnReset = el("btnReset");
+const btnLoginOk = el("btnLoginOk");
+const btnLoginCancel = el("btnLoginCancel");
+const btnScoreClose = el("btnScoreClose");
+
+let db = loadDB();
+let kid = null;
+let current = { phase:"letters", step:"TRACE", target:"A" };
+
+function setFeedback(icon, title, text){
+  feedback.innerHTML = `<span>${icon}</span><div><strong>${title}</strong> ${text}</div>`;
+}
+
+function emojiAvatar(name){
+  if(!name) return "🧒";
+  const c = name.trim().toLowerCase();
+  if(c.includes("ana")||c.includes("maria")) return "👧";
+  if(c.includes("jo")||c.includes("lu")||c.includes("pe")) return "🧒";
+  return "🧸";
+}
+
+function pickTargetByPhase(phase){
+  if(phase==="letters") return rand(CONTENT.letters);
+  if(phase==="syllables") return rand(CONTENT.syllables);
+  return rand(CONTENT.words);
+}
+
+function rand(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+function phaseFromLevel(level){
+  if(level<=1) return "letters";
+  if(level===2) return "syllables";
+  return "words";
+}
+
+function trackForKid(){
+  const t = TRACKS[kid?.level || 1];
+  return t || TRACKS[1];
+}
+
+function updateHeader(){
+  if(!kid){
+    topPill.textContent = "👧 Sem perfil • toque em “Entrar”";
+    kidName.textContent = "Nenhuma criança";
+    kidSub.textContent = "Entre para salvar progresso ⭐";
+    avatar.textContent = "🧒";
+    phaseChip.textContent = "🌈 Fase: Letras";
+    missionChip.textContent = "🎯 Missão: —";
+    starsChip.textContent = "⭐ 0";
+    levelChip.textContent = "Nível: 1";
+  }else{
+    topPill.textContent = `✅ Offline • Perfil: ${kid.name}`;
+    kidName.textContent = kid.name;
+    kidSub.textContent = TRACKS[kid.level].name;
+    avatar.textContent = emojiAvatar(kid.name);
+    phaseChip.textContent = `🌈 Fase: ${TRACKS[kid.level].phase}`;
+    const t = trackForKid();
+    missionChip.textContent = `🎯 Missão: ${(kid.mission % t.steps.length)+1}/${t.steps.length}`;
+    starsChip.textContent = `⭐ ${kid.stars}`;
+    levelChip.textContent = `Nível: ${kid.level}`;
+  }
+}
+
+function updateSide(){
+  if(!kid){
+    stStars.textContent = "0 ⭐";
+    stStreak.textContent = "0";
+    stMedals.textContent = "🥇0 🥈0 🥉0";
+    stLast.textContent = "—";
+    historyList.innerHTML = "";
+    return;
+  }
+  stStars.textContent = `${kid.stars} ⭐`;
+  stStreak.textContent = String(kid.streak3||0);
+  stMedals.textContent = `🥇${kid.medals.gold} 🥈${kid.medals.silver} 🥉${kid.medals.bronze}`;
+
+  const last = kid.history[kid.history.length-1];
+  stLast.textContent = last ? `${last.when} • ${last.target} • ${"⭐".repeat(last.stars||0)}` : "—";
+
+  const items = kid.history.slice(-6).reverse();
+  historyList.innerHTML = items.map(h => `
+    <div class="item">
+      <div><b>${h.target}</b> • ${h.when}</div>
+      <div class="stars">${"⭐".repeat(h.stars||0) || "—"}</div>
+    </div>
+  `).join("");
+}
+
+function setTarget(text){
+  targetText.textContent = text;
+  guideText.textContent = text;
+
+  // Ajusta tamanho do guia (para palavras grandes)
+  const len = text.length;
+  const guideEl = document.querySelector(".guide");
+  if(len <= 1) guideEl.style.fontSize = "200px";
+  else if(len <= 2) guideEl.style.fontSize = "190px";
+  else if(len <= 4) guideEl.style.fontSize = "150px";
+  else if(len <= 8) guideEl.style.fontSize = "110px";
+  else guideEl.style.fontSize = "86px";
+}
+
+function newMissionTarget(){
+  const phase = phaseFromLevel(kid?.level || 1);
+  current.phase = phase;
+  current.step = "TRACE";
+  current.target = pickTargetByPhase(phase);
+  setTarget(current.target);
+
+  hintText.textContent = "Desenhe por cima com o dedo 🙂";
+  setFeedback("💡", "Dica:", "cubra bastante o desenho. Capriche!");
+  clearPad();
+}
+
+function confettiPop(){
+  confetti.innerHTML = "";
+  const rect = confetti.getBoundingClientRect();
+  for(let i=0;i<18;i++){
+    const p = document.createElement("i");
+    const x = Math.random()*rect.width;
+    const hue = Math.floor(Math.random()*360);
+    p.style.left = x + "px";
+    p.style.top = (-20 - Math.random()*60) + "px";
+    p.style.background = `hsl(${hue} 90% 60%)`;
+    p.style.transform = `translateY(-40px) rotate(${Math.random()*90}deg)`;
+    confetti.appendChild(p);
+  }
+  setTimeout(()=> confetti.innerHTML = "", 950);
+}
+
+/* ============================
+   Sons simples (WebAudio)
+   ============================ */
+let audioCtx = null;
+function beep(freq=880, dur=0.12){
+  try{
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = "sine";
+    o.frequency.value = freq;
+    g.gain.value = 0.03;
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start();
+    setTimeout(()=>{ o.stop(); }, dur*1000);
+  }catch(e){}
+}
+function soundOK(){ beep(880,0.10); setTimeout(()=>beep(988,0.10), 110); }
+function soundNO(){ beep(220,0.16); }
+function soundUP(){ beep(740,0.08); setTimeout(()=>beep(880,0.08), 90); setTimeout(()=>beep(988,0.12), 180); }
+
+/* ============================
+   Ações principais
+   ============================ */
+function ensureKid(){
+  if(kid) return true;
+  setFeedback("👧", "Ops:", "clique em <strong>Entrar</strong> para salvar o progresso 🙂");
+  return false;
+}
+
+function loginWith(name){
+  name = (name||"").trim();
+  if(!name) return;
+  kid = getOrCreateKid(db, name);
+  saveDB(db);
+  updateHeader();
+  updateSide();
+  newMissionTarget();
+}
+
+function doCheck(){
+  if(!ensureKid()) return;
+
+  const r = evaluateDrawing();
+  if(r.stars === 0){
+    soundNO();
+    setFeedback("🙂", "Quase!", "desenhe um pouco mais por cima (cubra o desenho).");
+    return;
+  }
+
+  soundOK();
+  if(r.stars === 3) confettiPop();
+
+  const medal = medalFromStars(r.stars);
+  if(medal) kid.medals[medal]++;
+
+  kid.stars += r.stars;
+  if(r.stars === 3) kid.streak3 = (kid.streak3||0) + 1;
+  else kid.streak3 = 0;
+
+  // progresso / level up (didático)
+  // ao conseguir 3⭐ seguidas 3 vezes, sobe nível (até 3)
+  if(kid.streak3 >= 3 && kid.level < 3){
+    kid.level++;
+    kid.streak3 = 0;
+    soundUP();
+    setFeedback("🚀", "Nova fase!", `Você subiu para <strong>${TRACKS[kid.level].phase}</strong>!`);
+  } else {
+    setFeedback("⭐", "Muito bem!", `Você ganhou <strong>${r.stars}⭐</strong> • ${friendlyMedal(medal)} • tempo ${r.time.toFixed(1)}s`);
+  }
+
+  kid.history.push({ when: nowISO(), target: current.target, stars: r.stars, time: +r.time.toFixed(2) });
+  if(kid.history.length > 40) kid.history = kid.history.slice(-40);
+
+  // scoreboard global local
+  db.scoreboard.push({ name:kid.name, level:kid.level, target: current.target, stars:r.stars, time:+r.time.toFixed(2), when: nowISO() });
+  db.scoreboard.sort((a,b)=> (b.stars - a.stars) || (a.time - b.time));
+  db.scoreboard = db.scoreboard.slice(0, 30);
+
+  saveDB(db);
+  updateHeader();
+  updateSide();
+}
+
+function doNext(){
+  if(!ensureKid()) return;
+  newMissionTarget();
+}
+
+function doResetLevel(){
+  if(!ensureKid()) return;
+  // “Avaliação” bem simples: 6 mini rodadas (3 checks bons => nível 2; 5 => nível 3)
+  // Para não complicar UI, a gente pede confirmação e reseta nível = 1.
+  if(confirm("Refazer nível? Isso volta para Nível 1 e reinicia a fase.")){
+    kid.level = 1;
+    kid.streak3 = 0;
+    saveDB(db);
+    updateHeader();
+    updateSide();
+    newMissionTarget();
+    setFeedback("🧠", "Tudo certo!", "vamos recomeçar do Nível 1 🙂");
+  }
+}
+
+function openScoreboard(){
+  // montar top10
+  const top = (db.scoreboard || []).slice(0,10);
+  scoreBox.innerHTML = top.length ? top.map((e,i)=>`
+    <div class="item">
+      <div><b>${String(i+1).padStart(2,"0")}.</b> ${e.name} (N${e.level}) • <b>${e.target}</b></div>
+      <div class="stars">${"⭐".repeat(e.stars)} <span style="color:var(--muted);font-weight:900;font-size:12px;">${e.time}s</span></div>
+    </div>
+  `).join("") : `<div class="item"><div><b>Sem placar ainda</b></div><div class="stars">—</div></div>`;
+  dlgScore.showModal();
+}
+
+/* ============================
+   Eventos de UI
+   ============================ */
+btnEnter.addEventListener("click", ()=> {
+  inpName.value = kid?.name || "";
+  dlgLogin.showModal();
+  setTimeout(()=> inpName.focus(), 60);
+});
+btnLoginOk.addEventListener("click", ()=> {
+  const name = inpName.value.trim();
+  if(!name){ return; }
+  dlgLogin.close();
+  loginWith(name);
+});
+btnLoginCancel.addEventListener("click", ()=> dlgLogin.close());
+
+btnClear.addEventListener("click", ()=> {
+  clearPad();
+  setFeedback("🧽", "Limpou!", "tente desenhar de novo 🙂");
+});
+btnCheck.addEventListener("click", doCheck);
+btnNext.addEventListener("click", doNext);
+btnScore.addEventListener("click", openScoreboard);
+btnReset.addEventListener("click", doResetLevel);
+btnScoreClose.addEventListener("click", ()=> dlgScore.close());
+
+/* ============================
+   Boot
+   ============================ */
+resizeCanvas();
+updateHeader();
+updateSide();
+setTarget("A");
+
+// auto-carregar último perfil (se existir)
+(function autoload(){
+  const kids = db.kids || {};
+  const last = Object.keys(kids)[0];
+  // Se quiser carregar sempre o último usado, dá para salvar "lastKid" no storage.
+  // Por padrão, carrega o primeiro cadastrado.
+  if(last){
+    kid = kids[last];
+    updateHeader();
+    updateSide();
+    newMissionTarget();
+    setFeedback("✅", "Carregado!", `Perfil <strong>${kid.name}</strong> pronto 🙂`);
+  } else {
+    setFeedback("👧", "Bem-vindo!", "clique em <strong>Entrar</strong> para começar.");
+  }
+})();
+</script>
+</body>
+</html>
